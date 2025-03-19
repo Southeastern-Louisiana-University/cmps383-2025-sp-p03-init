@@ -4,6 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { LoginForm } from "./LoginForm";
 import { UserDto } from "./UserDto";
+import { AddTheaterForm } from "./AddTheaterForm";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,9 +32,7 @@ function App() {
       {!currentUser ? (
         <LoginForm onLoginSuccess={(x) => setCurrentUser(x)} />
       ) : (
-        <>
-          <h3>Add a theater</h3>
-        </>
+        <AddTheaterForm onAddTheaterSuccess={() => console.log("yay?")} />
       )}
     </>
   );
