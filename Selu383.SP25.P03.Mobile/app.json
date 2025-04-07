@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Selu383-SP25-P03-Mobile-g0m",
-    "slug": "Selu383-SP25-P03-Mobile-g0m",
+    "name": "Selu383.SP25.P03.Mobile",
+    "slug": "selu383-sp25-p03-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.selu383.sp25.p03.g0m"
+      "package": "com.selu383.sp25.p03.g07"
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +42,10 @@
       "router": {
         "origin": false
       },
-      "eas": {}
-    }
+      "eas": {
+        "projectId": "300df21f-e50b-4cbb-9fc7-9445f6af5aff"
+      }
+    },
+    "owner": "nlogann"
   }
 }

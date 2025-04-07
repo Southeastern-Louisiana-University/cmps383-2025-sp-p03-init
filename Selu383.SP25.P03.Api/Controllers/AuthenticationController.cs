@@ -23,8 +23,7 @@ namespace Selu383.SP25.P03.Api.Controllers
             users = dataContext.Set<User>();
         }
 
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto dto)
         {
             var result = await signInManager.PasswordSignInAsync(dto.UserName, dto.Password, false, false);
