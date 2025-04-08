@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Selu383.SP25.P03.Api.Features.Theaters;
+using Selu383.SP25.P03.Api.Features.Locations;
 
 namespace Selu383.SP25.P03.Api.Data
 {
@@ -9,37 +10,60 @@ namespace Selu383.SP25.P03.Api.Data
         {
             using (var context = new DataContext(serviceProvider.GetRequiredService<DbContextOptions<DataContext>>()))
             {
-                // Look for any theaters.
-                if (context.Theaters.Any())
+                // Ensure Locations are already seeded
+                var downtown = context.Locations.FirstOrDefault(l => l.Name.Contains("New York"));
+                var uptown = context.Locations.FirstOrDefault(l => l.Name.Contains("New Orleans"));
+
+                // If locations are missing, throw an exception
+                if (downtown == null || uptown == null)
                 {
-                    return;   // DB has been seeded
+                    throw new InvalidOperationException("Required locations are missing. Ensure SeedLocations.Initialize is called first.");
                 }
+
+                // Remove invalid theaters (those with invalid LocationId)
+                var invalidTheaters = context.Theaters.Where(t => !context.Locations.Any(l => l.Id == t.LocationId)).ToList();
+                if (invalidTheaters.Any())
+                {
+                    context.Theaters.RemoveRange(invalidTheaters);
+                    context.SaveChanges();
+                }
+
+                // Clear existing theaters before reseeding
+                context.Theaters.RemoveRange(context.Theaters);
+                context.SaveChanges();
+
+                // Reset identity (SQL Server example)
+                context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Theaters', RESEED, 0)");
+
+                // Add new theaters connected to the correct Location Ids
                 context.Theaters.AddRange(
                     new Theater
                     {
-                        Name = "AMC Palace 10",
-                        Address = "123 Main St, Springfield",
-                        SeatCount = 150
+                        TheaterNumber = 1,
+                        SeatCount = 150,
+                        LocationId = downtown.Id
                     },
                     new Theater
                     {
-                        Name = "Regal Cinema",
-                        Address = "456 Elm St, Shelbyville",
-                        SeatCount = 200
+                        TheaterNumber = 2,
+                        SeatCount = 200,
+                        LocationId = uptown.Id
                     },
                     new Theater
                     {
-                        Name = "Grand Theater",
-                        Address = "789 Broadway Ave, Metropolis",
-                        SeatCount = 300
+                        TheaterNumber = 3,
+                        SeatCount = 300,
+                        LocationId = downtown.Id
                     },
                     new Theater
                     {
-                        Name = "Vintage Drive-In",
-                        Address = "101 Retro Rd, Smallville",
-                        SeatCount = 75
+                        TheaterNumber = 4,
+                        SeatCount = 75,
+                        LocationId = uptown.Id
                     }
                 );
+
+                // Save changes to commit the new theaters to the database
                 context.SaveChanges();
             }
         }
