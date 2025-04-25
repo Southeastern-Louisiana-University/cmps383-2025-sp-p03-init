@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Selu383.SP25.P03.Api.Features.Theaters;
+using Selu383.SP25.P03.Api.Features.Locations;
 
 namespace Selu383.SP25.P03.Api.Data
 {
@@ -9,37 +10,40 @@ namespace Selu383.SP25.P03.Api.Data
         {
             using (var context = new DataContext(serviceProvider.GetRequiredService<DbContextOptions<DataContext>>()))
             {
-                // Look for any theaters.
-                if (context.Theaters.Any())
+                var ny = context.Locations.FirstOrDefault(l => l.Name.Contains("New York"));
+                var no = context.Locations.FirstOrDefault(l => l.Name.Contains("New Orleans"));
+                var la = context.Locations.FirstOrDefault(l => l.Name.Contains("Los Angeles"));
+
+                if (ny == null || no == null || la == null)
                 {
-                    return;   // DB has been seeded
+                    throw new InvalidOperationException("Required locations are missing.");
                 }
-                context.Theaters.AddRange(
-                    new Theater
+
+                context.Theaters.RemoveRange(context.Theaters);
+                context.SaveChanges();
+                context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Theaters', RESEED, 0)");
+
+                var theaters = new List<Theater>();
+                int seatCount = 150;
+
+                void AddTheaters(Location loc)
+                {
+                    for (int i = 1; i <= 8; i++)
                     {
-                        Name = "AMC Palace 10",
-                        Address = "123 Main St, Springfield",
-                        SeatCount = 150
-                    },
-                    new Theater
-                    {
-                        Name = "Regal Cinema",
-                        Address = "456 Elm St, Shelbyville",
-                        SeatCount = 200
-                    },
-                    new Theater
-                    {
-                        Name = "Grand Theater",
-                        Address = "789 Broadway Ave, Metropolis",
-                        SeatCount = 300
-                    },
-                    new Theater
-                    {
-                        Name = "Vintage Drive-In",
-                        Address = "101 Retro Rd, Smallville",
-                        SeatCount = 75
+                        theaters.Add(new Theater
+                        {
+                            TheaterNumber = i,
+                            SeatCount = seatCount,
+                            LocationId = loc.Id
+                        });
                     }
-                );
+                }
+
+                AddTheaters(ny);
+                AddTheaters(no);
+                AddTheaters(la);
+
+                context.Theaters.AddRange(theaters);
                 context.SaveChanges();
             }
         }

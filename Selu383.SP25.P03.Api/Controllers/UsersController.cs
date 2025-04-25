@@ -27,29 +27,41 @@ namespace Selu383.SP25.P03.Api.Controllers
             roles = dataContext.Set<Role>();
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto dto)
-        {
-            if (!dto.Roles.Any() || !dto.Roles.All(x => roles.Any(y => x == y.Name)))
-            {
-                return BadRequest();
-            }
+       [HttpPost]
+public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto dto)
+{
+    var allowedRoles = new List<string> { "Admin", "User" };
 
-            var result = await userManager.CreateAsync(new User { UserName = dto.Username }, dto.Password);
-            if (result.Succeeded)
-            {
-                await userManager.AddToRolesAsync(await userManager.FindByNameAsync(dto.Username), dto.Roles);
+    // Default to "User" role if none provided
+    var dtoRolesList = dto.Roles?.Any() == true ? dto.Roles : new List<string> { "User" };
 
-                var user = await userManager.FindByNameAsync(dto.Username);
-                return new UserDto
-                {
-                    Id = user.Id,
-                    UserName = dto.Username,
-                    Roles = dto.Roles
-                };
-            }
-            return BadRequest();
-        }
+    // Validate that all requested roles are allowed
+    if (!dtoRolesList.All(role => allowedRoles.Contains(role)))
+    {
+        return BadRequest(new { error = $"Invalid roles provided. Must be one of: {string.Join(", ", allowedRoles)}" });
+    }
+
+    var user = new User
+    {
+        UserName = dto.Username
+    };
+
+    var result = await userManager.CreateAsync(user, dto.Password);
+
+    if (!result.Succeeded)
+    {
+        return BadRequest(new { errors = result.Errors.Select(e => e.Description).ToList() });
+    }
+
+    await userManager.AddToRolesAsync(user, dtoRolesList);
+
+    return new UserDto
+    {
+        Id = user.Id,
+        UserName = user.UserName,
+        Roles = dtoRolesList
+    };
+}
+
     }
 }
