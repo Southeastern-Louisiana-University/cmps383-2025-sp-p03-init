@@ -1,0 +1,154 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: white;
+    margin: 0;
+    padding: 0;
+    padding-top: 70px; /* Space for the fixed navbar */
+  }
+  
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    background-color: #000;
+    padding: 0 40px;
+    height: 65px;
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+  
+  .navbar-center {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto;
+  margin-right: 15px; /* 🧩 gives space before the account links */
+  max-width: 250px; /* ⬅️ limit size */
+}
+  
+.search-bar {
+  width: 100%; /* use all available width inside navbar-center */
+  max-width: 220px; /* ⬅️ adjust if needed */
+  display: flex;
+  align-items: center;
+  background-color: #1c1f23;
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    white-space: nowrap;
+  }
+  
+
+  
+  
+  
+  
+  
+  .logo-img {
+    height: 50px; /* ⬅️ increase this */
+    object-fit: contain;
+    border-radius: 7px;
+    background-color: transparent;
+    display: block;
+  }
+  
+  
+  
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links li {
+    display: inline;
+  }
+  
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .nav-links li a:hover {
+    color: #d8b4fe;
+  }
+  
+
+  
+  
+  
+  .search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #a0a0a0;
+    font-size: 12px;
+    flex: 1;
+  }
+  
+  .search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a0a0a0;
+    font-size: 14px;
+  }
+  
+  .search-bar input::placeholder {
+    color: #6c757d;
+  }
+  
+  .search-bar button:hover {
+    color: #d8b4fe;
+  }
+  
+  .account-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .account-links a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    gap: 4px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .account-links a:hover {
+    color: #d8b4fe;
+  }
+  
+  .account-links .join {
+    font-weight: bold;
+  }
+ 
+
+  

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Selu383.SP25.P03.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddingIdentity : Migration
+    public partial class fixdb0 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +50,25 @@ namespace Selu383.SP25.P03.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RuntimeMinutes = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rating = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TrailerUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,6 +177,103 @@ namespace Selu383.SP25.P03.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Theaters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatCount = table.Column<int>(type: "int", nullable: false),
+                    ManagerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Theaters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Theaters_AspNetUsers_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Screens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatCount = table.Column<int>(type: "int", nullable: false),
+                    TheaterId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Screens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Screens_Theaters_TheaterId",
+                        column: x => x.TheaterId,
+                        principalTable: "Theaters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MovieShowtimes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Showtime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    ScreenId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovieShowtimes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MovieShowtimes_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MovieShowtimes_Screens_ScreenId",
+                        column: x => x.ScreenId,
+                        principalTable: "Screens",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    TicketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MovieShowtimeId = table.Column<int>(type: "int", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PurchaseTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsPurchased = table.Column<bool>(type: "bit", nullable: false),
+                    ConfirmationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MovieName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TheaterLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShowTime = table.Column<TimeSpan>(type: "time", nullable: true),
+                    SeatType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tickets", x => x.TicketId);
+                    table.ForeignKey(
+                        name: "FK_Tickets_MovieShowtimes_MovieShowtimeId",
+                        column: x => x.MovieShowtimeId,
+                        principalTable: "MovieShowtimes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -196,6 +312,32 @@ namespace Selu383.SP25.P03.Api.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieShowtimes_MovieId",
+                table: "MovieShowtimes",
+                column: "MovieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieShowtimes_ScreenId",
+                table: "MovieShowtimes",
+                column: "ScreenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Screens_TheaterId",
+                table: "Screens",
+                column: "TheaterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Theaters_ManagerId",
+                table: "Theaters",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_MovieShowtimeId_SeatNumber",
+                table: "Tickets",
+                columns: new[] { "MovieShowtimeId", "SeatNumber" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -217,7 +359,22 @@ namespace Selu383.SP25.P03.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Tickets");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "MovieShowtimes");
+
+            migrationBuilder.DropTable(
+                name: "Movies");
+
+            migrationBuilder.DropTable(
+                name: "Screens");
+
+            migrationBuilder.DropTable(
+                name: "Theaters");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
