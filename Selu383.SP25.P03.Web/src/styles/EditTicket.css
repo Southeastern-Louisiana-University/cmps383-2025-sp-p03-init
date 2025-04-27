@@ -1,0 +1,112 @@
+.ticket-form {
+    padding: 20px;
+    background-color: #000000;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .form-example {
+    margin-bottom: 20px;
+  }
+  
+  .form-example label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form-example input,
+  .form-example select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  form input[type="submit"] {
+    background-color: #4CAF50;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+  }
+  
+  form input[type="submit"]:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  
+  table th,
+  table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  table th {
+    background-color: #000000;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #000000;
+  }
+  
+  button {
+    padding: 5px 10px;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  
+  .seat-block {
+    padding: 10px;
+    background-color: lightgray;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    user-select: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, border 0.2s;
+  }
+  
+  .seat-block.available:hover {
+    background-color: #a0e7a0;
+  }
+  
+  .seat-block.booked {
+    background-color: #ff6b6b;
+    cursor: not-allowed;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .seat-block.selected {
+    border: 2px solid #007bff;
+    background-color: #9cc8f6;
+    font-weight: bold;
+  }
+  

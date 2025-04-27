@@ -9,38 +9,35 @@ namespace Selu383.SP25.P03.Api.Data
         {
             using (var context = new DataContext(serviceProvider.GetRequiredService<DbContextOptions<DataContext>>()))
             {
-                // Look for any theaters.
-                if (context.Theaters.Any())
+                if (!context.Theaters.Any())
                 {
-                    return;   // DB has been seeded
+                    context.Theaters.AddRange(
+                        new Theater
+                        {
+                            Name = "Lions Den New York",
+                            Address = "570 2nd Ave, New York, NY 10016",
+                            SeatCount = 150
+                        },
+                        new Theater
+                        {
+                            Name = "Lions Den New Orleans",
+                            Address = "636 N Broad St, New Orleans, LA 7011",
+                            SeatCount = 200
+                        },
+                        new Theater
+                        {
+                            Name = "Lions Den Los Angeles",
+                            Address = "4020 Marlton Ave, Los Angeles, CA 90008",
+                            SeatCount = 300
+                        }
+                    );
+                    context.SaveChanges();
                 }
-                context.Theaters.AddRange(
-                    new Theater
-                    {
-                        Name = "AMC Palace 10",
-                        Address = "123 Main St, Springfield",
-                        SeatCount = 150
-                    },
-                    new Theater
-                    {
-                        Name = "Regal Cinema",
-                        Address = "456 Elm St, Shelbyville",
-                        SeatCount = 200
-                    },
-                    new Theater
-                    {
-                        Name = "Grand Theater",
-                        Address = "789 Broadway Ave, Metropolis",
-                        SeatCount = 300
-                    },
-                    new Theater
-                    {
-                        Name = "Vintage Drive-In",
-                        Address = "101 Retro Rd, Smallville",
-                        SeatCount = 75
-                    }
-                );
-                context.SaveChanges();
+                else
+                {
+                    // Optionally log or print that theaters already exist
+                    Console.WriteLine("Theaters already exist in the database.");
+                }
             }
         }
     }
