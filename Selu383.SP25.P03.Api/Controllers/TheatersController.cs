@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Selu383.SP25.P03.Api.Data;
 using Selu383.SP25.P03.Api.Features.Theaters;
 using Selu383.SP25.P03.Api.Features.Users;
+using Stripe;
+using System;
 
 namespace Selu383.SP25.P03.Api.Controllers
 {
@@ -32,6 +34,13 @@ namespace Selu383.SP25.P03.Api.Controllers
         }
 
         [HttpGet]
+        [Route("Active")]
+        public IQueryable<TheaterDto> GetActiveTheaters()
+        {
+            return GetTheaterDtos(theaters.Where(x => x.Active == true)); 
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public ActionResult<TheaterDto> GetTheaterById(int id)
         {
@@ -45,7 +54,7 @@ namespace Selu383.SP25.P03.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRoleNames.Admin)]
+        //[Authorize(Roles = UserRoleNames.Admin)]
         public ActionResult<TheaterDto> CreateTheater(TheaterDto dto)
         {
             if (IsInvalid(dto))
@@ -56,9 +65,16 @@ namespace Selu383.SP25.P03.Api.Controllers
             var theater = new Theater
             {
                 Name = dto.Name,
-                Address = dto.Address,
-                SeatCount = dto.SeatCount,
-                ManagerId = dto.ManagerId
+                Address1 = dto.Address1,
+                Address2 = dto.Address2,
+                City = dto.City,
+                State = dto.State,
+                Zip = dto.Zip,
+                Phone1 = dto.Phone1,
+                Phone2 = dto.Phone2,
+                Active = dto.Active,
+                ManagerId = dto.ManagerId,
+
             };
             theaters.Add(theater);
 
@@ -71,7 +87,7 @@ namespace Selu383.SP25.P03.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<TheaterDto>> UpdateTheater(int id, TheaterDto dto)
         {
             if (IsInvalid(dto))
@@ -80,6 +96,11 @@ namespace Selu383.SP25.P03.Api.Controllers
             }
 
             var currentUser = await userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+            {
+                return Forbid();
+            }
 
             if (!User.IsInRole(UserRoleNames.Admin) && currentUser.Id != dto.ManagerId)
             {
@@ -92,9 +113,17 @@ namespace Selu383.SP25.P03.Api.Controllers
                 return NotFound();
             }
 
+            theater.Id = dto.Id;
             theater.Name = dto.Name;
-            theater.Address = dto.Address;
-            theater.SeatCount = dto.SeatCount;
+            theater.Address1 = dto.Address1;
+            theater.Address2 = dto.Address2;
+            theater.City = dto.City;
+            theater.State = dto.State;
+            theater.Zip = dto.Zip;
+            theater.Phone1 = dto.Phone1;
+            theater.Phone2 = dto.Phone2;
+            theater.Active = dto.Active;
+            theater.ManagerId = dto.ManagerId;
 
             if (User.IsInRole(UserRoleNames.Admin))
             {
@@ -111,7 +140,7 @@ namespace Selu383.SP25.P03.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize(Roles = UserRoleNames.Admin)]
+        //[Authorize(Roles = UserRoleNames.Admin)]
         public ActionResult DeleteTheater(int id)
         {
             var theater = theaters.FirstOrDefault(x => x.Id == id);
@@ -125,14 +154,15 @@ namespace Selu383.SP25.P03.Api.Controllers
             dataContext.SaveChanges();
 
             return Ok();
+        
         }
 
         private bool IsInvalid(TheaterDto dto)
         {
             return string.IsNullOrWhiteSpace(dto.Name) ||
                    dto.Name.Length > 120 ||
-                   string.IsNullOrWhiteSpace(dto.Address) ||
-                   dto.SeatCount <= 0 ||
+                   string.IsNullOrWhiteSpace(dto.Address1) ||
+                   //dto.SeatCount <= 0 ||
                    dto.ManagerId != null && !users.Any(x => x.Id == dto.ManagerId);
         }
 
@@ -143,8 +173,14 @@ namespace Selu383.SP25.P03.Api.Controllers
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Address = x.Address,
-                    SeatCount = x.SeatCount,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    State = x.State,
+                    Zip = x.Zip,
+                    Phone1 = x.Phone1,
+                    Phone2 = x.Phone2,
+                    Active = x.Active,
                     ManagerId = x.ManagerId
                 });
         }

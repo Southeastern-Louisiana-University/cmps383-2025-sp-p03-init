@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Selu383-SP25-P03-Mobile-g0m",
-    "slug": "Selu383-SP25-P03-Mobile-g0m",
+    "name": "Selu383-SP25-P03-Mobile-g03",
+    "slug": "selu383-sp25-p03-mobile-g03",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/movie-theater.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,22 +13,22 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/movie-theater.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.selu383.sp25.p03.g0m"
+      "package": "com.selu383.sp25.p03.g03"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/movie-theater.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/movie-theater.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -42,7 +42,10 @@
       "router": {
         "origin": false
       },
-      "eas": {}
-    }
+      "eas": {
+        "projectId": "27d08376-6fe6-40c7-bb46-76bc7cc5e7d9"
+      }
+    },
+    "owner": "chrisrichjr"
   }
 }
